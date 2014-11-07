@@ -2213,6 +2213,17 @@ ML_(generic_PRE_sys_mmap) ( ThreadId tid,
                                        arg5, arg6);
    }
 
+   
+   /* Another refinement: a hack to work around the hugepages
+    * For some reason huge page allocation has a problem with 
+    * MAP_FIXED, so ignore it. */
+   if(sr_isError(sres)){
+     /* try again, MAP_FIXED */
+     sres = VG_(am_do_mmap_NO_NOTIFY)(
+              advised, arg2, arg3, arg4,
+              arg5, arg6);
+   }
+   
    if (!sr_isError(sres)) {
       ULong di_handle;
       /* Notify aspacem. */
